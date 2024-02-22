@@ -16,6 +16,10 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+  },
+  "include": [
+    "src/**/*.ts", // 모든 .ts 파일을 포함
+    "src/**/*.d.ts" // 모든 .d.ts 파일을 포함
+  ],
 }

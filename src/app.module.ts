@@ -1,10 +1,12 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { CatModule } from './cat/cat.module';
 import { DatabaseConnection } from './databaseConnetion';
 import { ConfigModule } from './config.module';
+import { AuthModule } from './auth/auth.module';
+import { WinstonLoggerMiddleware } from './winston-logger/winston-logger.middleware';
 
 class OptionsProvider {
 	get() {
@@ -28,6 +30,7 @@ const connectionFactory = {
 
 @Module({
 	imports: [
+		AuthModule,
 		CatModule,
 		UserModule,
 		ConfigModule.forRoot({ folder: './config' }),
@@ -41,4 +44,8 @@ const connectionFactory = {
 	],
 	exports: [connectionFactory],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+	configure(consumer: MiddlewareConsumer) {
+		consumer.apply(WinstonLoggerMiddleware).forRoutes('*');
+	}
+}
