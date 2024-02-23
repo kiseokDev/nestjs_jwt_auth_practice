@@ -14,6 +14,6 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
 	async validate(payload: any) {
 		// The validate() method is called whenever a user is authenticated.
 		// It should return the authenticated user's data from the payload (jwt payload)
-		return { userId: payload.sub, username: payload.username };
+		return { id: payload.sub, username: payload.username };
 	}
 }

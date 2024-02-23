@@ -4,7 +4,6 @@ const DevelopmentCatService = {
 
 const ProductionCatService = {
 	findAll: () => {
-		console.log(process.env.NODE_ENV);
 		return `This action returns all cats from production service `;
 	},
 };

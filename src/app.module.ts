@@ -7,26 +7,8 @@ import { DatabaseConnection } from './databaseConnetion';
 import { ConfigModule } from './config.module';
 import { AuthModule } from './auth/auth.module';
 import { WinstonLoggerMiddleware } from './winston-logger/winston-logger.middleware';
-
-class OptionsProvider {
-	get() {
-		return {
-			host: 'localhost',
-			port: 3306,
-		};
-	}
-}
-
-// const optionalProvider = 'test options';
-
-const connectionFactory = {
-	provide: 'CONNECTION',
-	useFactory: (optionsProvider: OptionsProvider) => {
-		const options = optionsProvider.get();
-		return new DatabaseConnection(options);
-	},
-	inject: [OptionsProvider],
-};
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './user/entities/user.entity';
 
 @Module({
 	imports: [
@@ -34,15 +16,22 @@ const connectionFactory = {
 		CatModule,
 		UserModule,
 		ConfigModule.forRoot({ folder: './config' }),
+		TypeOrmModule.forRoot({
+			// ----------------- 추가 start
+			type: 'sqlite', // - DB 종류
+			database: 'db.sqlite', // - DB 파일 이름
+			entities: [User],
+			autoLoadEntities: true, // - 구동시 entity파일 자동 로드
+			synchronize: true, // - 서비스 구동시 entity와 디비의 테이블 싱크 개발만 할것
+			logging: true, // - orm 사용시 로그 남기기
+			// dropSchema: true, // - 구동시 해당 테이블 삭제 synchronize와 동시 사용
+		}),
 	],
 	controllers: [AppController],
 	providers: [
 		AppService,
-		connectionFactory,
-		OptionsProvider,
 		// { provide: 'SomeOptionalProvider', useValue: optionalProvider },
 	],
-	exports: [connectionFactory],
 })
 export class AppModule implements NestModule {
 	configure(consumer: MiddlewareConsumer) {

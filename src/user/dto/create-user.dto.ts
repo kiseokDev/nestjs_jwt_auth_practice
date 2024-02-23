@@ -1,20 +1,9 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { IsString } from 'class-validator';
 
-@Entity()
 export class CreateUserDto {
-	@PrimaryGeneratedColumn()
-	id?: number;
-
-	@Column()
+	@IsString()
 	username: string;
 
-	@Column()
+	@IsString()
 	password: string;
-
-	@Column()
-	createdDt: Date = new Date();
-}
-export class UpdateUserDto extends PartialType(CreateUserDto) {
-	// @Column()
 }

@@ -7,23 +7,20 @@ import {
 	Request,
 	UseGuards,
 } from '@nestjs/common';
-import { AppService } from './app.service';
-import { DatabaseConnection } from './databaseConnetion';
 import { LocalAuthGuard } from './auth/local-auth-guard';
 import { AuthGuard } from '@nestjs/passport';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { AuthService } from './auth/auth.service';
+import { UserService } from './user/user.service';
 
 @Controller()
 export class AppController {
 	constructor(
 		private readonly authService: AuthService,
-		@Inject('CONNECTION') private db: DatabaseConnection,
+		private readonly userService: UserService,
 	) {}
 
 	@Get()
 	getHello(): string {
-		this.db.logger();
 		return 'hello from nest js app controller';
 	}
 	// @UseGuards(AuthGuard('local'))
@@ -41,17 +38,13 @@ export class AppController {
 
 	@UseGuards(AuthGuard('refresh'))
 	@Post('auth/refresh')
-	restoreAccessToken(@Req() req: Request & AuthUser) {
-		return this.authService.getAccessToken({ user: req.user });
+	restoreAccessToken(@Request() req) {
+		return this.authService.generateAccessToken(req.user);
 	}
 }
 
 type User = {
 	username: string;
 	password: string;
-	userId: number;
+	id: number;
 };
-
-interface AuthUser {
-	user: Pick<User, 'username' | 'userId'>;
-}
