@@ -1,15 +1,18 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { jwtConstants } from './constants';
+import { jwtConstants } from '../constants';
 import { Logger, UnauthorizedException } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService } from '../auth.service';
 
-export class JwtRefreshStretegy extends PassportStrategy(Strategy, 'refresh') {
+export class JwtRefreshStretegy extends PassportStrategy(
+	Strategy,
+	'jwt-refresh',
+) {
 	constructor(private readonly authService: AuthService) {
 		super({
 			jwtFromRequest: (req) => {
-				const cookie = this.getCookie(req);
-				return cookie;
+				console.log(this.getCookie(req));
+				return this.getCookie(req);
 			},
 			ignoreExpiration: false,
 			secretOrKey: jwtConstants.refresh_secret,

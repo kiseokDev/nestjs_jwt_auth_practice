@@ -50,14 +50,14 @@ export class AuthService {
 		const payload = { username: user.username, sub: user.id };
 		return this.jwtService.sign(payload, {
 			secret: jwtConstants.access_secret,
-			expiresIn: '60s',
+			expiresIn: '30s',
 		});
 	}
 
 	generateRefreshToken(payload: any) {
 		const refresh = this.jwtService.sign(payload, {
 			secret: jwtConstants.refresh_secret,
-			expiresIn: '5m',
+			expiresIn: '30s',
 		});
 		return refresh;
 	}
