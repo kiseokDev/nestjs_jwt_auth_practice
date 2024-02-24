@@ -31,7 +31,7 @@ export class AuthService {
 	}
 
 	async login(user: Pick<User, 'username' | 'id'>) {
-		const payload = { username: user.username, sub: user.id };
+		const payload = { username: user.username, id: user.id };
 		const accessToken = this.generateAccessToken(payload);
 		const refreshToken = this.generateRefreshToken(payload);
 
@@ -47,7 +47,7 @@ export class AuthService {
 	}
 
 	generateAccessToken(user: any) {
-		const payload = { username: user.username, sub: user.id };
+		const payload = { username: user.username, id: user.id };
 		return this.jwtService.sign(payload, {
 			secret: jwtConstants.access_secret,
 			expiresIn: '30s',

@@ -1,19 +1,13 @@
-import {
-	Controller,
-	Get,
-	Inject,
-	Post,
-	Req,
-	Request,
-	UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from './auth/guard/local-auth-guard';
-import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth/auth.service';
 import { UserService } from './user/user.service';
-import { AccessTokenGuard } from './auth/guard/access-token.guard';
 import { RefreshTokenGuard } from './auth/guard/refresh-token.guard';
+import { Public } from './auth/decorator/public.decorator';
+import { Roles } from './auth/decorator/roles.decorator';
+import { RoleEnum } from './auth/enum/role.enum';
 
+@Roles(RoleEnum.User)
 @Controller()
 export class AppController {
 	constructor(
@@ -25,16 +19,22 @@ export class AppController {
 	getHello(): string {
 		return 'hello from nest js app controller';
 	}
-	// === @UseGuards(AuthGuard('local'))
 	@UseGuards(LocalAuthGuard)
+	@Public() //이러면 글로벌 가드적용 안됨
 	@Post('auth/login')
 	async login(@Request() req) {
 		return this.authService.login(req.user);
 	}
 	// === @UseGuards(AuthGuard('jwt'))
-	@UseGuards(AccessTokenGuard)
 	@Get('profile')
+	@Roles(RoleEnum.Admin)
 	getProfile(@Request() req) {
+		return req.user;
+	}
+	// === @UseGuards(AuthGuard('jwt'))
+	@Public()
+	@Get('public')
+	authorizationTest(@Request() req) {
 		return req.user;
 	}
 	@UseGuards(RefreshTokenGuard)
