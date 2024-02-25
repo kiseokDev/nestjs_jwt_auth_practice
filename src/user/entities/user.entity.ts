@@ -23,6 +23,9 @@ export class User {
 
 	@Column({ nullable: true })
 	refreshToken?: string | null;
+
+	@Column({ nullable: true })
+	roles?: string | null;
 }
 
 export class CreatedUser extends PartialType(User) {}

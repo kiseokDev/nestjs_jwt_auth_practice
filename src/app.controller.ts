@@ -2,7 +2,7 @@ import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from './auth/guard/local-auth-guard';
 import { AuthService } from './auth/auth.service';
 import { UserService } from './user/user.service';
-import { RefreshTokenGuard } from './auth/guard/refresh-token.guard';
+import { RefreshTokenGuard } from './auth/guard/jwt/refresh-token.guard';
 import { Public } from './auth/decorator/public.decorator';
 import { Roles } from './auth/decorator/roles.decorator';
 import { RoleEnum } from './auth/enum/role.enum';

@@ -7,11 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { JwtAccessStrategy } from './strategy/jwt-access.strategy';
 import { JwtRefreshStretegy } from './strategy/jwt-refresh.strategy';
-import { UserService } from 'src/user/user.service';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './guard/public.guard';
-import { JwtGlobalGuard } from './guard/jwt-global-guard';
-import { LocalAuthGuard } from './guard/local-auth-guard';
+import { GlobalAccessTokenGuard } from './guard/jwt/jwt-global.guard';
 
 @Module({
 	imports: [UserModule, PassportModule, JwtModule.register({})],
@@ -22,7 +19,7 @@ import { LocalAuthGuard } from './guard/local-auth-guard';
 		JwtAccessStrategy,
 		{
 			provide: APP_GUARD,
-			useClass: JwtGlobalGuard,
+			useClass: GlobalAccessTokenGuard,
 		},
 	],
 	exports: [AuthService, JwtRefreshStretegy, JwtAccessStrategy],

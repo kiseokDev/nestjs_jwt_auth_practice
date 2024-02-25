@@ -38,4 +38,7 @@ export class UserService {
 		const { password, accessToken, refreshToken, ...result } = savedUser;
 		return result;
 	}
+	async findByOne(id: number): Promise<User> {
+		return await this.userRepository.findOneBy({ id });
+	}
 }

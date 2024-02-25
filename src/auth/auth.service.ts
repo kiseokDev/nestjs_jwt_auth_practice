@@ -1,4 +1,4 @@
-import { Injectable, Req } from '@nestjs/common';
+import { ExecutionContext, Injectable, Req } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
@@ -7,12 +7,12 @@ import { User } from 'src/user/entities/user.entity';
 @Injectable()
 export class AuthService {
 	constructor(
-		private usersService: UserService,
+		private userService: UserService,
 		private jwtService: JwtService,
 	) {}
 
 	async validateUser(username: string, pass: string): Promise<any> {
-		const user = await this.usersService.findOne('username', username);
+		const user = await this.userService.findOne('username', username);
 		if (user && user.password === pass) {
 			const { password, accessToken, refreshToken, ...result } = user;
 			return result;
@@ -20,7 +20,7 @@ export class AuthService {
 		return null;
 	}
 	async validateRefreshToken(refreshToken: string) {
-		const user = await this.usersService.findOne(
+		const user = await this.userService.findOne(
 			'refreshToken',
 			refreshToken,
 		);
@@ -35,7 +35,7 @@ export class AuthService {
 		const accessToken = this.generateAccessToken(payload);
 		const refreshToken = this.generateRefreshToken(payload);
 
-		this.usersService.update(user.id, {
+		this.userService.update(user.id, {
 			accessToken,
 			refreshToken,
 			createdDt: new Date(),
@@ -60,5 +60,18 @@ export class AuthService {
 			expiresIn: '30s',
 		});
 		return refresh;
+	}
+
+	getTokenFromHeader(context: ExecutionContext) {
+		//TODO TOKEN 타입 정의해야할듯
+		return context
+			.switchToHttp()
+			.getRequest()
+			.headers.authorization.split(' ')[1];
+	}
+
+	async getUserRolesById(id: string) {
+		const user = await this.userService.findByOne(Number(id));
+		return user.roles;
 	}
 }
