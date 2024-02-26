@@ -71,7 +71,7 @@ export class AuthService {
 	}
 
 	async getUserRolesById(id: string) {
-		const user = await this.userService.findByOne(Number(id));
+		const user = await this.userService.findOneBy(Number(id));
 		return user.roles;
 	}
 }
